@@ -1,0 +1,1276 @@
+---
+title: "Untitled"
+author: "Andrew Wells"
+date: "4/7/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readr)
+library(tidyverse)
+library(sandwich)
+library(lmtest)
+library(broom)
+library(ggpubr)
+library(stargazer)
+library(kableExtra)
+options(scipen=999)
+```
+
+```{r, echo=FALSE}
+df_21 <- read_csv("~/Desktop/Semester 6/E1318_inclusive_organisations/research_paper/data/eeo1_2021_puf.csv")
+df_21$TOTAL10 <- as.numeric(df_21$TOTAL10)
+df_21$WHT10 <- as.numeric(df_21$WHT10)
+df_21$BLKT10 <- as.numeric(df_21$BLKT10)
+df_21$HISPT10 <- as.numeric(df_21$HISPT10)
+df_21$ASIANT10 <- as.numeric(df_21$ASIANT10)
+df_21$AIANT10 <- as.numeric(df_21$AIANT10)
+df_21$NHOPIT10 <- as.numeric(df_21$nhopiT10)
+df_21$MT10 <- as.numeric(df_21$MT10)
+df_21$FT10 <- as.numeric(df_21$FT10)
+
+df_21$TOTAL1 <- as.numeric(df_21$TOTAL1)
+df_21$BLKT1 <- as.numeric(df_21$BLKT1)
+df_21$AIANT1 <- as.numeric(df_21$AIANT1)
+df_21$HISPT1 <- as.numeric(df_21$HISPT1)
+df_21$ASIANT1 <- as.numeric(df_21$ASIANT1)
+df_21$MT1 <- as.numeric(df_21$MT1)
+df_21$FT1 <- as.numeric(df_21$FT1)
+df_21$WHF1 <- as.numeric(df_21$WHF1)
+df_21$BLKF1 <- as.numeric(df_21$BLKF1)
+df_21$HISPF1 <- as.numeric(df_21$HISPF1)
+df_21$ASIANF1 <- as.numeric(df_21$ASIANF1)
+df_21$AIANF1 <- as.numeric(df_21$AIANF1)
+df_21$NHOPIF1 <- as.numeric(df_21$NHOPIF1)
+
+df_21$TOTAL2 <- as.numeric(df_21$TOTAL2)
+df_21$BLKT2 <- as.numeric(df_21$BLKT2)
+df_21$AIANT2 <- as.numeric(df_21$AIANT2)
+df_21$HISPT2 <- as.numeric(df_21$HISPT2)
+df_21$ASIANT2 <- as.numeric(df_21$ASIANT2)
+df_21$MT2 <- as.numeric(df_21$MT2)
+df_21$FT2 <- as.numeric(df_21$FT2)
+df_21$WHF2 <- as.numeric(df_21$WHF2)
+df_21$BLKF2 <- as.numeric(df_21$BLKF2)
+df_21$HISPF2 <- as.numeric(df_21$HISPF2)
+df_21$ASIANF2 <- as.numeric(df_21$ASIANF2)
+df_21$AIANF2 <- as.numeric(df_21$AIANF2)
+df_21$NHOPIF2 <- as.numeric(df_21$NHOPIF2)
+
+df_21$TOTAL3 <- as.numeric(df_21$TOTAL3)
+df_21$BLKT3 <- as.numeric(df_21$BLKT3)
+df_21$AIANT3 <- as.numeric(df_21$AIANT3)
+df_21$HISPT3 <- as.numeric(df_21$HISPT3)
+df_21$ASIANT3 <- as.numeric(df_21$ASIANT3)
+df_21$MT3 <- as.numeric(df_21$MT3)
+df_21$FT3 <- as.numeric(df_21$FT3)
+df_21$WHF3 <- as.numeric(df_21$WHF3)
+df_21$BLKF3 <- as.numeric(df_21$BLKF3)
+df_21$HISPF3 <- as.numeric(df_21$HISPF3)
+df_21$ASIANF3 <- as.numeric(df_21$ASIANF3)
+df_21$AIANF3 <- as.numeric(df_21$AIANF3)
+df_21$NHOPIF3 <- as.numeric(df_21$NHOPIF3)
+
+df_21$TOTAL8 <- as.numeric(df_21$TOTAL8)
+df_21$BLKT8 <- as.numeric(df_21$BLKT8)
+df_21$AIANT8 <- as.numeric(df_21$AIANT8)
+df_21$HISPT8 <- as.numeric(df_21$HISPT8)
+df_21$ASIANT8 <- as.numeric(df_21$ASIANT8)
+df_21$MT8 <- as.numeric(df_21$MT8)
+df_21$FT8 <- as.numeric(df_21$FT8)
+df_21$WHF8 <- as.numeric(df_21$WHF8)
+df_21$BLKF8 <- as.numeric(df_21$BLKF8)
+df_21$HISPF8 <- as.numeric(df_21$HISPF8)
+df_21$ASIANF8 <- as.numeric(df_21$ASIANF8)
+df_21$AIANF8 <- as.numeric(df_21$AIANF8)
+df_21$NHOPIF8 <- as.numeric(df_21$NHOPIF8)
+
+df_21$TOTAL9 <- as.numeric(df_21$TOTAL9)
+df_21$BLKT9 <- as.numeric(df_21$BLKT9)
+df_21$AIANT9 <- as.numeric(df_21$AIANT9)
+df_21$HISPT9 <- as.numeric(df_21$HISPT9)
+df_21$ASIANT9 <- as.numeric(df_21$ASIANT9)
+df_21$MT9 <- as.numeric(df_21$MT9)
+df_21$FT9 <- as.numeric(df_21$FT9)
+df_21$WHF9 <- as.numeric(df_21$WHF9)
+df_21$BLKF9 <- as.numeric(df_21$BLKF9)
+df_21$HISPF9 <- as.numeric(df_21$HISPF9)
+df_21$ASIANF9 <- as.numeric(df_21$ASIANF9)
+df_21$AIANF9 <- as.numeric(df_21$AIANF9)
+df_21$NHOPIF9 <- as.numeric(df_21$NHOPIF9)
+
+df_21$TOTAL1_2 <- as.numeric(df_21$TOTAL1_2)
+df_21$BLKT1_2 <- as.numeric(df_21$BLKT1_2)
+df_21$AIANT1_2 <- as.numeric(df_21$AIANT1_2)
+df_21$HISPT1_2 <- as.numeric(df_21$HISPT1_2)
+df_21$ASIANT1_2 <- as.numeric(df_21$ASIANT1_2)
+df_21$MT1_2 <- as.numeric(df_21$MT1_2)
+df_21$FT1_2 <- as.numeric(df_21$FT1_2)
+df_21$WHF1_2 <- as.numeric(df_21$WHF1_2)
+df_21$BLKF1_2 <- as.numeric(df_21$BLKF1_2)
+df_21$HISPF1_2 <- as.numeric(df_21$HISPF1_2)
+df_21$ASIANF1_2 <- as.numeric(df_21$ASIANF1_2)
+df_21$AIANF1_2 <- as.numeric(df_21$AIANF1_2)
+df_21$NHOPIF1_2 <- as.numeric(df_21$NHOPIF1_2)
+
+df_20 <- read_csv("~/Desktop/Semester 6/E1318_inclusive_organisations/research_paper/data/eeo1_2020_puf.csv")
+df_20$TOTAL10 <- as.numeric(df_20$TOTAL10)
+df_20$WHT10 <- as.numeric(df_20$WHT10)
+df_20$BLKT10 <- as.numeric(df_20$BLKT10)
+df_20$HISPT10 <- as.numeric(df_20$HISPT10)
+df_20$ASIANT10 <- as.numeric(df_20$ASIANT10)
+df_20$AIANT10 <- as.numeric(df_20$AIANT10)
+df_20$NHOPIT10 <- as.numeric(df_20$nhopiT10)
+df_20$MT10 <- as.numeric(df_20$MT10)
+df_20$FT10 <- as.numeric(df_20$FT10)
+
+df_20$TOTAL1 <- as.numeric(df_20$TOTAL1)
+df_20$BLKT1 <- as.numeric(df_20$BLKT1)
+df_20$AIANT1 <- as.numeric(df_20$AIANT1)
+df_20$HISPT1 <- as.numeric(df_20$HISPT1)
+df_20$ASIANT1 <- as.numeric(df_20$ASIANT1)
+df_20$MT1 <- as.numeric(df_20$MT1)
+df_20$FT1 <- as.numeric(df_20$FT1)
+df_20$WHF1 <- as.numeric(df_20$WHF1)
+df_20$BLKF1 <- as.numeric(df_20$BLKF1)
+df_20$HISPF1 <- as.numeric(df_20$HISPF1)
+df_20$ASIANF1 <- as.numeric(df_20$ASIANF1)
+df_20$AIANF1 <- as.numeric(df_20$AIANF1)
+df_20$NHOPIF1 <- as.numeric(df_20$NHOPIF1)
+
+df_20$TOTAL2 <- as.numeric(df_20$TOTAL2)
+df_20$BLKT2 <- as.numeric(df_20$BLKT2)
+df_20$AIANT2 <- as.numeric(df_20$AIANT2)
+df_20$HISPT2 <- as.numeric(df_20$HISPT2)
+df_20$ASIANT2 <- as.numeric(df_20$ASIANT2)
+df_20$MT2 <- as.numeric(df_20$MT2)
+df_20$FT2 <- as.numeric(df_20$FT2)
+df_20$WHF2 <- as.numeric(df_20$WHF2)
+df_20$BLKF2 <- as.numeric(df_20$BLKF2)
+df_20$HISPF2 <- as.numeric(df_20$HISPF2)
+df_20$ASIANF2 <- as.numeric(df_20$ASIANF2)
+df_20$AIANF2 <- as.numeric(df_20$AIANF2)
+df_20$NHOPIF2 <- as.numeric(df_20$NHOPIF2)
+
+df_20$TOTAL3 <- as.numeric(df_20$TOTAL3)
+df_20$BLKT3 <- as.numeric(df_20$BLKT3)
+df_20$AIANT3 <- as.numeric(df_20$AIANT3)
+df_20$HISPT3 <- as.numeric(df_20$HISPT3)
+df_20$ASIANT3 <- as.numeric(df_20$ASIANT3)
+df_20$MT3 <- as.numeric(df_20$MT3)
+df_20$FT3 <- as.numeric(df_20$FT3)
+df_20$WHF3 <- as.numeric(df_20$WHF3)
+df_20$BLKF3 <- as.numeric(df_20$BLKF3)
+df_20$HISPF3 <- as.numeric(df_20$HISPF3)
+df_20$ASIANF3 <- as.numeric(df_20$ASIANF3)
+df_20$AIANF3 <- as.numeric(df_20$AIANF3)
+df_20$NHOPIF3 <- as.numeric(df_20$NHOPIF3)
+
+df_20$TOTAL8 <- as.numeric(df_20$TOTAL8)
+df_20$BLKT8 <- as.numeric(df_20$BLKT8)
+df_20$AIANT8 <- as.numeric(df_20$AIANT8)
+df_20$HISPT8 <- as.numeric(df_20$HISPT8)
+df_20$ASIANT8 <- as.numeric(df_20$ASIANT8)
+df_20$MT8 <- as.numeric(df_20$MT8)
+df_20$FT8 <- as.numeric(df_20$FT8)
+df_20$WHF8 <- as.numeric(df_20$WHF8)
+df_20$BLKF8 <- as.numeric(df_20$BLKF8)
+df_20$HISPF8 <- as.numeric(df_20$HISPF8)
+df_20$ASIANF8 <- as.numeric(df_20$ASIANF8)
+df_20$AIANF8 <- as.numeric(df_20$AIANF8)
+df_20$NHOPIF8 <- as.numeric(df_20$NHOPIF8)
+
+df_20$TOTAL9 <- as.numeric(df_20$TOTAL9)
+df_20$BLKT9 <- as.numeric(df_20$BLKT9)
+df_20$AIANT9 <- as.numeric(df_20$AIANT9)
+df_20$HISPT9 <- as.numeric(df_20$HISPT9)
+df_20$ASIANT9 <- as.numeric(df_20$ASIANT9)
+df_20$MT9 <- as.numeric(df_20$MT9)
+df_20$FT9 <- as.numeric(df_20$FT9)
+df_20$WHF9 <- as.numeric(df_20$WHF9)
+df_20$BLKF9 <- as.numeric(df_20$BLKF9)
+df_20$HISPF9 <- as.numeric(df_20$HISPF9)
+df_20$ASIANF9 <- as.numeric(df_20$ASIANF9)
+df_20$AIANF9 <- as.numeric(df_20$AIANF9)
+df_20$NHOPIF9 <- as.numeric(df_20$NHOPIF9)
+
+df_20$TOTAL1_2 <- as.numeric(df_20$TOTAL1_2)
+df_20$BLKT1_2 <- as.numeric(df_20$BLKT1_2)
+df_20$AIANT1_2 <- as.numeric(df_20$AIANT1_2)
+df_20$HISPT1_2 <- as.numeric(df_20$HISPT1_2)
+df_20$ASIANT1_2 <- as.numeric(df_20$ASIANT1_2)
+df_20$MT1_2 <- as.numeric(df_20$MT1_2)
+df_20$FT1_2 <- as.numeric(df_20$FT1_2)
+df_20$WHF1_2 <- as.numeric(df_20$WHF1_2)
+df_20$BLKF1_2 <- as.numeric(df_20$BLKF1_2)
+df_20$HISPF1_2 <- as.numeric(df_20$HISPF1_2)
+df_20$ASIANF1_2 <- as.numeric(df_20$ASIANF1_2)
+df_20$AIANF1_2 <- as.numeric(df_20$AIANF1_2)
+df_20$NHOPIF1_2 <- as.numeric(df_20$NHOPIF1_2)
+
+df_19 <- read_csv("~/Desktop/Semester 6/E1318_inclusive_organisations/research_paper/data/eeo1_2019_puf.csv")
+df_19$TOTAL10 <- as.numeric(df_19$TOTAL10)
+df_19$WHT10 <- as.numeric(df_19$WHT10)
+df_19$BLKT10 <- as.numeric(df_19$BLKT10)
+df_19$HISPT10 <- as.numeric(df_19$HISPT10)
+df_19$ASIANT10 <- as.numeric(df_19$ASIANT10)
+df_19$AIANT10 <- as.numeric(df_19$AIANT10)
+df_19$NHOPIT10 <- as.numeric(df_19$nhopiT10)
+df_19$MT10 <- as.numeric(df_19$MT10)
+df_19$FT10 <- as.numeric(df_19$FT10)
+
+df_19$TOTAL1 <- as.numeric(df_19$TOTAL1)
+df_19$BLKT1 <- as.numeric(df_19$BLKT1)
+df_19$AIANT1 <- as.numeric(df_19$AIANT1)
+df_19$HISPT1 <- as.numeric(df_19$HISPT1)
+df_19$ASIANT1 <- as.numeric(df_19$ASIANT1)
+df_19$MT1 <- as.numeric(df_19$MT1)
+df_19$FT1 <- as.numeric(df_19$FT1)
+df_19$WHF1 <- as.numeric(df_19$WHF1)
+df_19$BLKF1 <- as.numeric(df_19$BLKF1)
+df_19$HISPF1 <- as.numeric(df_19$HISPF1)
+df_19$ASIANF1 <- as.numeric(df_19$ASIANF1)
+df_19$AIANF1 <- as.numeric(df_19$AIANF1)
+df_19$NHOPIF1 <- as.numeric(df_19$NHOPIF1)
+
+df_19$TOTAL2 <- as.numeric(df_19$TOTAL2)
+df_19$BLKT2 <- as.numeric(df_19$BLKT2)
+df_19$AIANT2 <- as.numeric(df_19$AIANT2)
+df_19$HISPT2 <- as.numeric(df_19$HISPT2)
+df_19$ASIANT2 <- as.numeric(df_19$ASIANT2)
+df_19$MT2 <- as.numeric(df_19$MT2)
+df_19$FT2 <- as.numeric(df_19$FT2)
+df_19$WHF2 <- as.numeric(df_19$WHF2)
+df_19$BLKF2 <- as.numeric(df_19$BLKF2)
+df_19$HISPF2 <- as.numeric(df_19$HISPF2)
+df_19$ASIANF2 <- as.numeric(df_19$ASIANF2)
+df_19$AIANF2 <- as.numeric(df_19$AIANF2)
+df_19$NHOPIF2 <- as.numeric(df_19$NHOPIF2)
+
+df_19$TOTAL3 <- as.numeric(df_19$TOTAL3)
+df_19$BLKT3 <- as.numeric(df_19$BLKT3)
+df_19$AIANT3 <- as.numeric(df_19$AIANT3)
+df_19$HISPT3 <- as.numeric(df_19$HISPT3)
+df_19$ASIANT3 <- as.numeric(df_19$ASIANT3)
+df_19$MT3 <- as.numeric(df_19$MT3)
+df_19$FT3 <- as.numeric(df_19$FT3)
+df_19$WHF3 <- as.numeric(df_19$WHF3)
+df_19$BLKF3 <- as.numeric(df_19$BLKF3)
+df_19$HISPF3 <- as.numeric(df_19$HISPF3)
+df_19$ASIANF3 <- as.numeric(df_19$ASIANF3)
+df_19$AIANF3 <- as.numeric(df_19$AIANF3)
+df_19$NHOPIF3 <- as.numeric(df_19$NHOPIF3)
+
+df_19$TOTAL8 <- as.numeric(df_19$TOTAL8)
+df_19$BLKT8 <- as.numeric(df_19$BLKT8)
+df_19$AIANT8 <- as.numeric(df_19$AIANT8)
+df_19$HISPT8 <- as.numeric(df_19$HISPT8)
+df_19$ASIANT8 <- as.numeric(df_19$ASIANT8)
+df_19$MT8 <- as.numeric(df_19$MT8)
+df_19$FT8 <- as.numeric(df_19$FT8)
+df_19$WHF8 <- as.numeric(df_19$WHF8)
+df_19$BLKF8 <- as.numeric(df_19$BLKF8)
+df_19$HISPF8 <- as.numeric(df_19$HISPF8)
+df_19$ASIANF8 <- as.numeric(df_19$ASIANF8)
+df_19$AIANF8 <- as.numeric(df_19$AIANF8)
+df_19$NHOPIF8 <- as.numeric(df_19$NHOPIF8)
+
+df_19$TOTAL9 <- as.numeric(df_19$TOTAL9)
+df_19$BLKT9 <- as.numeric(df_19$BLKT9)
+df_19$AIANT9 <- as.numeric(df_19$AIANT9)
+df_19$HISPT9 <- as.numeric(df_19$HISPT9)
+df_19$ASIANT9 <- as.numeric(df_19$ASIANT9)
+df_19$MT9 <- as.numeric(df_19$MT9)
+df_19$FT9 <- as.numeric(df_19$FT9)
+df_19$WHF9 <- as.numeric(df_19$WHF9)
+df_19$BLKF9 <- as.numeric(df_19$BLKF9)
+df_19$HISPF9 <- as.numeric(df_19$HISPF9)
+df_19$ASIANF9 <- as.numeric(df_19$ASIANF9)
+df_19$AIANF9 <- as.numeric(df_19$AIANF9)
+df_19$NHOPIF9 <- as.numeric(df_19$NHOPIF9)
+
+df_19$TOTAL1_2 <- as.numeric(df_19$TOTAL1_2)
+df_19$BLKT1_2 <- as.numeric(df_19$BLKT1_2)
+df_19$AIANT1_2 <- as.numeric(df_19$AIANT1_2)
+df_19$HISPT1_2 <- as.numeric(df_19$HISPT1_2)
+df_19$ASIANT1_2 <- as.numeric(df_19$ASIANT1_2)
+df_19$MT1_2 <- as.numeric(df_19$MT1_2)
+df_19$FT1_2 <- as.numeric(df_19$FT1_2)
+df_19$WHF1_2 <- as.numeric(df_19$WHF1_2)
+df_19$BLKF1_2 <- as.numeric(df_19$BLKF1_2)
+df_19$HISPF1_2 <- as.numeric(df_19$HISPF1_2)
+df_19$ASIANF1_2 <- as.numeric(df_19$ASIANF1_2)
+df_19$AIANF1_2 <- as.numeric(df_19$AIANF1_2)
+df_19$NHOPIF1_2 <- as.numeric(df_19$NHOPIF1_2)
+
+df_18 <- read_csv("~/Desktop/Semester 6/E1318_inclusive_organisations/research_paper/data/eeo1_2018_puf.csv")
+df_18$TOTAL10 <- as.numeric(df_18$TOTAL10)
+df_18$WHT10 <- as.numeric(df_18$WHT10)
+df_18$BLKT10 <- as.numeric(df_18$BLKT10)
+df_18$HISPT10 <- as.numeric(df_18$HISPT10)
+df_18$ASIANT10 <- as.numeric(df_18$ASIANT10)
+df_18$AIANT10 <- as.numeric(df_18$AIANT10)
+df_18$NHOPIT10 <- as.numeric(df_18$NHOPIT10)
+df_18$MT10 <- as.numeric(df_18$MT10)
+df_18$FT10 <- as.numeric(df_18$FT10)
+
+df_18$TOTAL1 <- as.numeric(df_18$TOTAL1)
+df_18$BLKT1 <- as.numeric(df_18$BLKT1)
+df_18$AIANT1 <- as.numeric(df_18$AIANT1)
+df_18$HISPT1 <- as.numeric(df_18$HISPT1)
+df_18$ASIANT1 <- as.numeric(df_18$ASIANT1)
+df_18$MT1 <- as.numeric(df_18$MT1)
+df_18$FT1 <- as.numeric(df_18$FT1)
+df_18$WHF1 <- as.numeric(df_18$WHF1)
+df_18$BLKF1 <- as.numeric(df_18$BLKF1)
+df_18$HISPF1 <- as.numeric(df_18$HISPF1)
+df_18$ASIANF1 <- as.numeric(df_18$ASIANF1)
+df_18$AIANF1 <- as.numeric(df_18$AIANF1)
+df_18$NHOPIF1 <- as.numeric(df_18$NHOPIF1)
+
+df_18$TOTAL2 <- as.numeric(df_18$TOTAL2)
+df_18$BLKT2 <- as.numeric(df_18$BLKT2)
+df_18$AIANT2 <- as.numeric(df_18$AIANT2)
+df_18$HISPT2 <- as.numeric(df_18$HISPT2)
+df_18$ASIANT2 <- as.numeric(df_18$ASIANT2)
+df_18$MT2 <- as.numeric(df_18$MT2)
+df_18$FT2 <- as.numeric(df_18$FT2)
+df_18$WHF2 <- as.numeric(df_18$WHF2)
+df_18$BLKF2 <- as.numeric(df_18$BLKF2)
+df_18$HISPF2 <- as.numeric(df_18$HISPF2)
+df_18$ASIANF2 <- as.numeric(df_18$ASIANF2)
+df_18$AIANF2 <- as.numeric(df_18$AIANF2)
+df_18$NHOPIF2 <- as.numeric(df_18$NHOPIF2)
+
+df_18$TOTAL3 <- as.numeric(df_18$TOTAL3)
+df_18$BLKT3 <- as.numeric(df_18$BLKT3)
+df_18$AIANT3 <- as.numeric(df_18$AIANT3)
+df_18$HISPT3 <- as.numeric(df_18$HISPT3)
+df_18$ASIANT3 <- as.numeric(df_18$ASIANT3)
+df_18$MT3 <- as.numeric(df_18$MT3)
+df_18$FT3 <- as.numeric(df_18$FT3)
+df_18$WHF3 <- as.numeric(df_18$WHF3)
+df_18$BLKF3 <- as.numeric(df_18$BLKF3)
+df_18$HISPF3 <- as.numeric(df_18$HISPF3)
+df_18$ASIANF3 <- as.numeric(df_18$ASIANF3)
+df_18$AIANF3 <- as.numeric(df_18$AIANF3)
+df_18$NHOPIF3 <- as.numeric(df_18$NHOPIF3)
+
+df_18$TOTAL8 <- as.numeric(df_18$TOTAL8)
+df_18$BLKT8 <- as.numeric(df_18$BLKT8)
+df_18$AIANT8 <- as.numeric(df_18$AIANT8)
+df_18$HISPT8 <- as.numeric(df_18$HISPT8)
+df_18$ASIANT8 <- as.numeric(df_18$ASIANT8)
+df_18$MT8 <- as.numeric(df_18$MT8)
+df_18$FT8 <- as.numeric(df_18$FT8)
+df_18$WHF8 <- as.numeric(df_18$WHF8)
+df_18$BLKF8 <- as.numeric(df_18$BLKF8)
+df_18$HISPF8 <- as.numeric(df_18$HISPF8)
+df_18$ASIANF8 <- as.numeric(df_18$ASIANF8)
+df_18$AIANF8 <- as.numeric(df_18$AIANF8)
+df_18$NHOPIF8 <- as.numeric(df_18$NHOPIF8)
+
+df_18$TOTAL9 <- as.numeric(df_18$TOTAL9)
+df_18$BLKT9 <- as.numeric(df_18$BLKT9)
+df_18$AIANT9 <- as.numeric(df_18$AIANT9)
+df_18$HISPT9 <- as.numeric(df_18$HISPT9)
+df_18$ASIANT9 <- as.numeric(df_18$ASIANT9)
+df_18$MT9 <- as.numeric(df_18$MT9)
+df_18$FT9 <- as.numeric(df_18$FT9)
+df_18$WHF9 <- as.numeric(df_18$WHF9)
+df_18$BLKF9 <- as.numeric(df_18$BLKF9)
+df_18$HISPF9 <- as.numeric(df_18$HISPF9)
+df_18$ASIANF9 <- as.numeric(df_18$ASIANF9)
+df_18$AIANF9 <- as.numeric(df_18$AIANF9)
+df_18$NHOPIF9 <- as.numeric(df_18$NHOPIF9)
+
+df_18$TOTAL1_2 <- as.numeric(df_18$TOTAL1_2)
+df_18$BLKT1_2 <- as.numeric(df_18$BLKT1_2)
+df_18$AIANT1_2 <- as.numeric(df_18$AIANT1_2)
+df_18$HISPT1_2 <- as.numeric(df_18$HISPT1_2)
+df_18$ASIANT1_2 <- as.numeric(df_18$ASIANT1_2)
+df_18$MT1_2 <- as.numeric(df_18$MT1_2)
+df_18$FT1_2 <- as.numeric(df_18$FT1_2)
+df_18$WHF1_2 <- as.numeric(df_18$WHF1_2)
+df_18$BLKF1_2 <- as.numeric(df_18$BLKF1_2)
+df_18$HISPF1_2 <- as.numeric(df_18$HISPF1_2)
+df_18$ASIANF1_2 <- as.numeric(df_18$ASIANF1_2)
+df_18$AIANF1_2 <- as.numeric(df_18$AIANF1_2)
+df_18$NHOPIF1_2 <- as.numeric(df_18$NHOPIF1_2)
+
+df_17 <- read_csv("~/Desktop/Semester 6/E1318_inclusive_organisations/research_paper/data/eeo1_2017_puf.csv")
+df_17$TOTAL10 <- as.numeric(df_17$TOTAL10)
+df_17$WHT10 <- as.numeric(df_17$WHT10)
+df_17$BLKT10 <- as.numeric(df_17$BLKT10)
+df_17$HISPT10 <- as.numeric(df_17$HISPT10)
+df_17$ASIANT10 <- as.numeric(df_17$ASIANT10)
+df_17$AIANT10 <- as.numeric(df_17$AIANT10)
+df_17$NHOPIT10 <- as.numeric(df_17$NHOPIT10)
+df_17$MT10 <- as.numeric(df_17$MT10)
+df_17$FT10 <- as.numeric(df_17$FT10)
+
+df_17$TOTAL1 <- as.numeric(df_17$TOTAL1)
+df_17$BLKT1 <- as.numeric(df_17$BLKT1)
+df_17$AIANT1 <- as.numeric(df_17$AIANT1)
+df_17$HISPT1 <- as.numeric(df_17$HISPT1)
+df_17$ASIANT1 <- as.numeric(df_17$ASIANT1)
+df_17$MT1 <- as.numeric(df_17$MT1)
+df_17$FT1 <- as.numeric(df_17$FT1)
+df_17$WHF1 <- as.numeric(df_17$WHF1)
+df_17$BLKF1 <- as.numeric(df_17$BLKF1)
+df_17$HISPF1 <- as.numeric(df_17$HISPF1)
+df_17$ASIANF1 <- as.numeric(df_17$ASIANF1)
+df_17$AIANF1 <- as.numeric(df_17$AIANF1)
+df_17$NHOPIF1 <- as.numeric(df_17$NHOPIF1)
+
+df_17$TOTAL2 <- as.numeric(df_17$TOTAL2)
+df_17$BLKT2 <- as.numeric(df_17$BLKT2)
+df_17$AIANT2 <- as.numeric(df_17$AIANT2)
+df_17$HISPT2 <- as.numeric(df_17$HISPT2)
+df_17$ASIANT2 <- as.numeric(df_17$ASIANT2)
+df_17$MT2 <- as.numeric(df_17$MT2)
+df_17$FT2 <- as.numeric(df_17$FT2)
+df_17$WHF2 <- as.numeric(df_17$WHF2)
+df_17$BLKF2 <- as.numeric(df_17$BLKF2)
+df_17$HISPF2 <- as.numeric(df_17$HISPF2)
+df_17$ASIANF2 <- as.numeric(df_17$ASIANF2)
+df_17$AIANF2 <- as.numeric(df_17$AIANF2)
+df_17$NHOPIF2 <- as.numeric(df_17$NHOPIF2)
+
+df_17$TOTAL3 <- as.numeric(df_17$TOTAL3)
+df_17$BLKT3 <- as.numeric(df_17$BLKT3)
+df_17$AIANT3 <- as.numeric(df_17$AIANT3)
+df_17$HISPT3 <- as.numeric(df_17$HISPT3)
+df_17$ASIANT3 <- as.numeric(df_17$ASIANT3)
+df_17$MT3 <- as.numeric(df_17$MT3)
+df_17$FT3 <- as.numeric(df_17$FT3)
+df_17$WHF3 <- as.numeric(df_17$WHF3)
+df_17$BLKF3 <- as.numeric(df_17$BLKF3)
+df_17$HISPF3 <- as.numeric(df_17$HISPF3)
+df_17$ASIANF3 <- as.numeric(df_17$ASIANF3)
+df_17$AIANF3 <- as.numeric(df_17$AIANF3)
+df_17$NHOPIF3 <- as.numeric(df_17$NHOPIF3)
+
+df_17$TOTAL8 <- as.numeric(df_17$TOTAL8)
+df_17$BLKT8 <- as.numeric(df_17$BLKT8)
+df_17$AIANT8 <- as.numeric(df_17$AIANT8)
+df_17$HISPT8 <- as.numeric(df_17$HISPT8)
+df_17$ASIANT8 <- as.numeric(df_17$ASIANT8)
+df_17$MT8 <- as.numeric(df_17$MT8)
+df_17$FT8 <- as.numeric(df_17$FT8)
+df_17$WHF8 <- as.numeric(df_17$WHF8)
+df_17$BLKF8 <- as.numeric(df_17$BLKF8)
+df_17$HISPF8 <- as.numeric(df_17$HISPF8)
+df_17$ASIANF8 <- as.numeric(df_17$ASIANF8)
+df_17$AIANF8 <- as.numeric(df_17$AIANF8)
+df_17$NHOPIF8 <- as.numeric(df_17$NHOPIF8)
+
+df_17$TOTAL9 <- as.numeric(df_17$TOTAL9)
+df_17$BLKT9 <- as.numeric(df_17$BLKT9)
+df_17$AIANT9 <- as.numeric(df_17$AIANT9)
+df_17$HISPT9 <- as.numeric(df_17$HISPT9)
+df_17$ASIANT9 <- as.numeric(df_17$ASIANT9)
+df_17$MT9 <- as.numeric(df_17$MT9)
+df_17$FT9 <- as.numeric(df_17$FT9)
+df_17$WHF9 <- as.numeric(df_17$WHF9)
+df_17$BLKF9 <- as.numeric(df_17$BLKF9)
+df_17$HISPF9 <- as.numeric(df_17$HISPF9)
+df_17$ASIANF9 <- as.numeric(df_17$ASIANF9)
+df_17$AIANF9 <- as.numeric(df_17$AIANF9)
+df_17$NHOPIF9 <- as.numeric(df_17$NHOPIF9)
+
+df_17$TOTAL1_2 <- as.numeric(df_17$TOTAL1_2)
+df_17$BLKT1_2 <- as.numeric(df_17$BLKT1_2)
+df_17$AIANT1_2 <- as.numeric(df_17$AIANT1_2)
+df_17$HISPT1_2 <- as.numeric(df_17$HISPT1_2)
+df_17$ASIANT1_2 <- as.numeric(df_17$ASIANT1_2)
+df_17$MT1_2 <- as.numeric(df_17$MT1_2)
+df_17$FT1_2 <- as.numeric(df_17$FT1_2)
+df_17$WHF1_2 <- as.numeric(df_17$WHF1_2)
+df_17$BLKF1_2 <- as.numeric(df_17$BLKF1_2)
+df_17$HISPF1_2 <- as.numeric(df_17$HISPF1_2)
+df_17$ASIANF1_2 <- as.numeric(df_17$ASIANF1_2)
+df_17$AIANF1_2 <- as.numeric(df_17$AIANF1_2)
+df_17$NHOPIF1_2 <- as.numeric(df_17$NHOPIF1_2)
+
+df_16 <- read_csv("~/Desktop/Semester 6/E1318_inclusive_organisations/research_paper/data/eeo1_2016_puf.csv")
+df_16$TOTAL10 <- as.numeric(df_16$TOTAL10)
+df_16$WHT10 <- as.numeric(df_16$WHT10)
+df_16$BLKT10 <- as.numeric(df_16$BLKT10)
+df_16$HISPT10 <- as.numeric(df_16$HISPT10)
+df_16$ASIANT10 <- as.numeric(df_16$ASIANT10)
+df_16$AIANT10 <- as.numeric(df_16$AIANT10)
+df_16$NHOPIT10 <- as.numeric(df_16$NHOPIT10)
+df_16$MT10 <- as.numeric(df_16$MT10)
+df_16$FT10 <- as.numeric(df_16$FT10)
+
+df_16$TOTAL1 <- as.numeric(df_16$TOTAL1)
+df_16$BLKT1 <- as.numeric(df_16$BLKT1)
+df_16$AIANT1 <- as.numeric(df_16$AIANT1)
+df_16$HISPT1 <- as.numeric(df_16$HISPT1)
+df_16$ASIANT1 <- as.numeric(df_16$ASIANT1)
+df_16$MT1 <- as.numeric(df_16$MT1)
+df_16$FT1 <- as.numeric(df_16$FT1)
+df_16$WHF1 <- as.numeric(df_16$WHF1)
+df_16$BLKF1 <- as.numeric(df_16$BLKF1)
+df_16$HISPF1 <- as.numeric(df_16$HISPF1)
+df_16$ASIANF1 <- as.numeric(df_16$ASIANF1)
+df_16$AIANF1 <- as.numeric(df_16$AIANF1)
+df_16$NHOPIF1 <- as.numeric(df_16$NHOPIF1)
+
+df_16$TOTAL2 <- as.numeric(df_16$TOTAL2)
+df_16$BLKT2 <- as.numeric(df_16$BLKT2)
+df_16$AIANT2 <- as.numeric(df_16$AIANT2)
+df_16$HISPT2 <- as.numeric(df_16$HISPT2)
+df_16$ASIANT2 <- as.numeric(df_16$ASIANT2)
+df_16$MT2 <- as.numeric(df_16$MT2)
+df_16$FT2 <- as.numeric(df_16$FT2)
+df_16$WHF2 <- as.numeric(df_16$WHF2)
+df_16$BLKF2 <- as.numeric(df_16$BLKF2)
+df_16$HISPF2 <- as.numeric(df_16$HISPF2)
+df_16$ASIANF2 <- as.numeric(df_16$ASIANF2)
+df_16$AIANF2 <- as.numeric(df_16$AIANF2)
+df_16$NHOPIF2 <- as.numeric(df_16$NHOPIF2)
+
+df_16$TOTAL3 <- as.numeric(df_16$TOTAL3)
+df_16$BLKT3 <- as.numeric(df_16$BLKT3)
+df_16$AIANT3 <- as.numeric(df_16$AIANT3)
+df_16$HISPT3 <- as.numeric(df_16$HISPT3)
+df_16$ASIANT3 <- as.numeric(df_16$ASIANT3)
+df_16$MT3 <- as.numeric(df_16$MT3)
+df_16$FT3 <- as.numeric(df_16$FT3)
+df_16$WHF3 <- as.numeric(df_16$WHF3)
+df_16$BLKF3 <- as.numeric(df_16$BLKF3)
+df_16$HISPF3 <- as.numeric(df_16$HISPF3)
+df_16$ASIANF3 <- as.numeric(df_16$ASIANF3)
+df_16$AIANF3 <- as.numeric(df_16$AIANF3)
+df_16$NHOPIF3 <- as.numeric(df_16$NHOPIF3)
+
+df_16$TOTAL8 <- as.numeric(df_16$TOTAL8)
+df_16$BLKT8 <- as.numeric(df_16$BLKT8)
+df_16$AIANT8 <- as.numeric(df_16$AIANT8)
+df_16$HISPT8 <- as.numeric(df_16$HISPT8)
+df_16$ASIANT8 <- as.numeric(df_16$ASIANT8)
+df_16$MT8 <- as.numeric(df_16$MT8)
+df_16$FT8 <- as.numeric(df_16$FT8)
+df_16$WHF8 <- as.numeric(df_16$WHF8)
+df_16$BLKF8 <- as.numeric(df_16$BLKF8)
+df_16$HISPF8 <- as.numeric(df_16$HISPF8)
+df_16$ASIANF8 <- as.numeric(df_16$ASIANF8)
+df_16$AIANF8 <- as.numeric(df_16$AIANF8)
+df_16$NHOPIF8 <- as.numeric(df_16$NHOPIF8)
+
+df_16$TOTAL9 <- as.numeric(df_16$TOTAL9)
+df_16$BLKT9 <- as.numeric(df_16$BLKT9)
+df_16$AIANT9 <- as.numeric(df_16$AIANT9)
+df_16$HISPT9 <- as.numeric(df_16$HISPT9)
+df_16$ASIANT9 <- as.numeric(df_16$ASIANT9)
+df_16$MT9 <- as.numeric(df_16$MT9)
+df_16$FT9 <- as.numeric(df_16$FT9)
+df_16$WHF9 <- as.numeric(df_16$WHF9)
+df_16$BLKF9 <- as.numeric(df_16$BLKF9)
+df_16$HISPF9 <- as.numeric(df_16$HISPF9)
+df_16$ASIANF9 <- as.numeric(df_16$ASIANF9)
+df_16$AIANF9 <- as.numeric(df_16$AIANF9)
+df_16$NHOPIF9 <- as.numeric(df_16$NHOPIF9)
+
+df_16$TOTAL1_2 <- as.numeric(df_16$TOTAL1_2)
+df_16$BLKT1_2 <- as.numeric(df_16$BLKT1_2)
+df_16$AIANT1_2 <- as.numeric(df_16$AIANT1_2)
+df_16$HISPT1_2 <- as.numeric(df_16$HISPT1_2)
+df_16$ASIANT1_2 <- as.numeric(df_16$ASIANT1_2)
+df_16$MT1_2 <- as.numeric(df_16$MT1_2)
+df_16$FT1_2 <- as.numeric(df_16$FT1_2)
+df_16$WHF1_2 <- as.numeric(df_16$WHF1_2)
+df_16$BLKF1_2 <- as.numeric(df_16$BLKF1_2)
+df_16$HISPF1_2 <- as.numeric(df_16$HISPF1_2)
+df_16$ASIANF1_2 <- as.numeric(df_16$ASIANF1_2)
+df_16$AIANF1_2 <- as.numeric(df_16$AIANF1_2)
+df_16$NHOPIF1_2 <- as.numeric(df_16$NHOPIF1_2)
+
+df_15 <- read_csv("~/Desktop/Semester 6/E1318_inclusive_organisations/research_paper/data/eeo1_2015_puf.csv")
+df_15$TOTAL10 <- as.numeric(df_15$TOTAL10)
+df_15$WHT10 <- as.numeric(df_15$WHT10)
+df_15$BLKT10 <- as.numeric(df_15$BLKT10)
+df_15$HISPT10 <- as.numeric(df_15$HISPT10)
+df_15$ASIANT10 <- as.numeric(df_15$ASIANT10)
+df_15$AIANT10 <- as.numeric(df_15$AIANT10)
+df_15$NHOPIT10 <- as.numeric(df_15$NHOPIT10)
+df_15$MT10 <- as.numeric(df_15$MT10)
+df_15$FT10 <- as.numeric(df_15$FT10)
+
+df_15$TOTAL1 <- as.numeric(df_15$TOTAL1)
+df_15$BLKT1 <- as.numeric(df_15$BLKT1)
+df_15$AIANT1 <- as.numeric(df_15$AIANT1)
+df_15$HISPT1 <- as.numeric(df_15$HISPT1)
+df_15$ASIANT1 <- as.numeric(df_15$ASIANT1)
+df_15$MT1 <- as.numeric(df_15$MT1)
+df_15$FT1 <- as.numeric(df_15$FT1)
+df_15$WHF1 <- as.numeric(df_15$WHF1)
+df_15$BLKF1 <- as.numeric(df_15$BLKF1)
+df_15$HISPF1 <- as.numeric(df_15$HISPF1)
+df_15$ASIANF1 <- as.numeric(df_15$ASIANF1)
+df_15$AIANF1 <- as.numeric(df_15$AIANF1)
+df_15$NHOPIF1 <- as.numeric(df_15$NHOPIF1)
+
+df_15$TOTAL2 <- as.numeric(df_15$TOTAL2)
+df_15$BLKT2 <- as.numeric(df_15$BLKT2)
+df_15$AIANT2 <- as.numeric(df_15$AIANT2)
+df_15$HISPT2 <- as.numeric(df_15$HISPT2)
+df_15$ASIANT2 <- as.numeric(df_15$ASIANT2)
+df_15$MT2 <- as.numeric(df_15$MT2)
+df_15$FT2 <- as.numeric(df_15$FT2)
+df_15$WHF2 <- as.numeric(df_15$WHF2)
+df_15$BLKF2 <- as.numeric(df_15$BLKF2)
+df_15$HISPF2 <- as.numeric(df_15$HISPF2)
+df_15$ASIANF2 <- as.numeric(df_15$ASIANF2)
+df_15$AIANF2 <- as.numeric(df_15$AIANF2)
+df_15$NHOPIF2 <- as.numeric(df_15$NHOPIF2)
+
+df_15$TOTAL3 <- as.numeric(df_15$TOTAL3)
+df_15$BLKT3 <- as.numeric(df_15$BLKT3)
+df_15$AIANT3 <- as.numeric(df_15$AIANT3)
+df_15$HISPT3 <- as.numeric(df_15$HISPT3)
+df_15$ASIANT3 <- as.numeric(df_15$ASIANT3)
+df_15$MT3 <- as.numeric(df_15$MT3)
+df_15$FT3 <- as.numeric(df_15$FT3)
+df_15$WHF3 <- as.numeric(df_15$WHF3)
+df_15$BLKF3 <- as.numeric(df_15$BLKF3)
+df_15$HISPF3 <- as.numeric(df_15$HISPF3)
+df_15$ASIANF3 <- as.numeric(df_15$ASIANF3)
+df_15$AIANF3 <- as.numeric(df_15$AIANF3)
+df_15$NHOPIF3 <- as.numeric(df_15$NHOPIF3)
+
+df_15$TOTAL8 <- as.numeric(df_15$TOTAL8)
+df_15$BLKT8 <- as.numeric(df_15$BLKT8)
+df_15$AIANT8 <- as.numeric(df_15$AIANT8)
+df_15$HISPT8 <- as.numeric(df_15$HISPT8)
+df_15$ASIANT8 <- as.numeric(df_15$ASIANT8)
+df_15$MT8 <- as.numeric(df_15$MT8)
+df_15$FT8 <- as.numeric(df_15$FT8)
+df_15$WHF8 <- as.numeric(df_15$WHF8)
+df_15$BLKF8 <- as.numeric(df_15$BLKF8)
+df_15$HISPF8 <- as.numeric(df_15$HISPF8)
+df_15$ASIANF8 <- as.numeric(df_15$ASIANF8)
+df_15$AIANF8 <- as.numeric(df_15$AIANF8)
+df_15$NHOPIF8 <- as.numeric(df_15$NHOPIF8)
+
+df_15$TOTAL9 <- as.numeric(df_15$TOTAL9)
+df_15$BLKT9 <- as.numeric(df_15$BLKT9)
+df_15$AIANT9 <- as.numeric(df_15$AIANT9)
+df_15$HISPT9 <- as.numeric(df_15$HISPT9)
+df_15$ASIANT9 <- as.numeric(df_15$ASIANT9)
+df_15$MT9 <- as.numeric(df_15$MT9)
+df_15$FT9 <- as.numeric(df_15$FT9)
+df_15$WHF9 <- as.numeric(df_15$WHF9)
+df_15$BLKF9 <- as.numeric(df_15$BLKF9)
+df_15$HISPF9 <- as.numeric(df_15$HISPF9)
+df_15$ASIANF9 <- as.numeric(df_15$ASIANF9)
+df_15$AIANF9 <- as.numeric(df_15$AIANF9)
+df_15$NHOPIF9 <- as.numeric(df_15$NHOPIF9)
+
+df_15$TOTAL1_2 <- as.numeric(df_15$TOTAL1_2)
+df_15$BLKT1_2 <- as.numeric(df_15$BLKT1_2)
+df_15$AIANT1_2 <- as.numeric(df_15$AIANT1_2)
+df_15$HISPT1_2 <- as.numeric(df_15$HISPT1_2)
+df_15$ASIANT1_2 <- as.numeric(df_15$ASIANT1_2)
+df_15$MT1_2 <- as.numeric(df_15$MT1_2)
+df_15$FT1_2 <- as.numeric(df_15$FT1_2)
+df_15$WHF1_2 <- as.numeric(df_15$WHF1_2)
+df_15$BLKF1_2 <- as.numeric(df_15$BLKF1_2)
+df_15$HISPF1_2 <- as.numeric(df_15$HISPF1_2)
+df_15$ASIANF1_2 <- as.numeric(df_15$ASIANF1_2)
+df_15$AIANF1_2 <- as.numeric(df_15$AIANF1_2)
+df_15$NHOPIF1_2 <- as.numeric(df_15$NHOPIF1_2)
+
+df_14 <- read_csv("~/Desktop/Semester 6/E1318_inclusive_organisations/research_paper/data/eeo1_2014_puf.csv")
+df_14$TOTAL10 <- as.numeric(df_14$TOTAL10)
+df_14$WHT10 <- as.numeric(df_14$WHT10)
+df_14$BLKT10 <- as.numeric(df_14$BLKT10)
+df_14$HISPT10 <- as.numeric(df_14$HISPT10)
+df_14$ASIANT10 <- as.numeric(df_14$ASIANT10)
+df_14$AIANT10 <- as.numeric(df_14$AIANT10)
+df_14$NHOPIT10 <- as.numeric(df_14$NHOPIT10)
+df_14$MT10 <- as.numeric(df_14$MT10)
+df_14$FT10 <- as.numeric(df_14$FT10)
+
+df_14$TOTAL1 <- as.numeric(df_14$TOTAL1)
+df_14$BLKT1 <- as.numeric(df_14$BLKT1)
+df_14$AIANT1 <- as.numeric(df_14$AIANT1)
+df_14$HISPT1 <- as.numeric(df_14$HISPT1)
+df_14$ASIANT1 <- as.numeric(df_14$ASIANT1)
+df_14$MT1 <- as.numeric(df_14$MT1)
+df_14$FT1 <- as.numeric(df_14$FT1)
+df_14$WHF1 <- as.numeric(df_14$WHF1)
+df_14$BLKF1 <- as.numeric(df_14$BLKF1)
+df_14$HISPF1 <- as.numeric(df_14$HISPF1)
+df_14$ASIANF1 <- as.numeric(df_14$ASIANF1)
+df_14$AIANF1 <- as.numeric(df_14$AIANF1)
+df_14$NHOPIF1 <- as.numeric(df_14$NHOPIF1)
+
+df_14$TOTAL2 <- as.numeric(df_14$TOTAL2)
+df_14$BLKT2 <- as.numeric(df_14$BLKT2)
+df_14$AIANT2 <- as.numeric(df_14$AIANT2)
+df_14$HISPT2 <- as.numeric(df_14$HISPT2)
+df_14$ASIANT2 <- as.numeric(df_14$ASIANT2)
+df_14$MT2 <- as.numeric(df_14$MT2)
+df_14$FT2 <- as.numeric(df_14$FT2)
+df_14$WHF2 <- as.numeric(df_14$WHF2)
+df_14$BLKF2 <- as.numeric(df_14$BLKF2)
+df_14$HISPF2 <- as.numeric(df_14$HISPF2)
+df_14$ASIANF2 <- as.numeric(df_14$ASIANF2)
+df_14$AIANF2 <- as.numeric(df_14$AIANF2)
+df_14$NHOPIF2 <- as.numeric(df_14$NHOPIF2)
+
+df_14$TOTAL3 <- as.numeric(df_14$TOTAL3)
+df_14$BLKT3 <- as.numeric(df_14$BLKT3)
+df_14$AIANT3 <- as.numeric(df_14$AIANT3)
+df_14$HISPT3 <- as.numeric(df_14$HISPT3)
+df_14$ASIANT3 <- as.numeric(df_14$ASIANT3)
+df_14$MT3 <- as.numeric(df_14$MT3)
+df_14$FT3 <- as.numeric(df_14$FT3)
+df_14$WHF3 <- as.numeric(df_14$WHF3)
+df_14$BLKF3 <- as.numeric(df_14$BLKF3)
+df_14$HISPF3 <- as.numeric(df_14$HISPF3)
+df_14$ASIANF3 <- as.numeric(df_14$ASIANF3)
+df_14$AIANF3 <- as.numeric(df_14$AIANF3)
+df_14$NHOPIF3 <- as.numeric(df_14$NHOPIF3)
+
+df_14$TOTAL8 <- as.numeric(df_14$TOTAL8)
+df_14$BLKT8 <- as.numeric(df_14$BLKT8)
+df_14$AIANT8 <- as.numeric(df_14$AIANT8)
+df_14$HISPT8 <- as.numeric(df_14$HISPT8)
+df_14$ASIANT8 <- as.numeric(df_14$ASIANT8)
+df_14$MT8 <- as.numeric(df_14$MT8)
+df_14$FT8 <- as.numeric(df_14$FT8)
+df_14$WHF8 <- as.numeric(df_14$WHF8)
+df_14$BLKF8 <- as.numeric(df_14$BLKF8)
+df_14$HISPF8 <- as.numeric(df_14$HISPF8)
+df_14$ASIANF8 <- as.numeric(df_14$ASIANF8)
+df_14$AIANF8 <- as.numeric(df_14$AIANF8)
+df_14$NHOPIF8 <- as.numeric(df_14$NHOPIF8)
+
+df_14$TOTAL9 <- as.numeric(df_14$TOTAL9)
+df_14$BLKT9 <- as.numeric(df_14$BLKT9)
+df_14$AIANT9 <- as.numeric(df_14$AIANT9)
+df_14$HISPT9 <- as.numeric(df_14$HISPT9)
+df_14$ASIANT9 <- as.numeric(df_14$ASIANT9)
+df_14$MT9 <- as.numeric(df_14$MT9)
+df_14$FT9 <- as.numeric(df_14$FT9)
+df_14$WHF9 <- as.numeric(df_14$WHF9)
+df_14$BLKF9 <- as.numeric(df_14$BLKF9)
+df_14$HISPF9 <- as.numeric(df_14$HISPF9)
+df_14$ASIANF9 <- as.numeric(df_14$ASIANF9)
+df_14$AIANF9 <- as.numeric(df_14$AIANF9)
+df_14$NHOPIF9 <- as.numeric(df_14$NHOPIF9)
+
+df_14$TOTAL1_2 <- as.numeric(df_14$TOTAL1_2)
+df_14$BLKT1_2 <- as.numeric(df_14$BLKT1_2)
+df_14$AIANT1_2 <- as.numeric(df_14$AIANT1_2)
+df_14$HISPT1_2 <- as.numeric(df_14$HISPT1_2)
+df_14$ASIANT1_2 <- as.numeric(df_14$ASIANT1_2)
+df_14$MT1_2 <- as.numeric(df_14$MT1_2)
+df_14$FT1_2 <- as.numeric(df_14$FT1_2)
+df_14$WHF1_2 <- as.numeric(df_14$WHF1_2)
+df_14$BLKF1_2 <- as.numeric(df_14$BLKF1_2)
+df_14$HISPF1_2 <- as.numeric(df_14$HISPF1_2)
+df_14$ASIANF1_2 <- as.numeric(df_14$ASIANF1_2)
+df_14$AIANF1_2 <- as.numeric(df_14$AIANF1_2)
+df_14$NHOPIF1_2 <- as.numeric(df_14$NHOPIF1_2)
+```
+
+```{r, echo=FALSE}
+# Create lists of input data frames, states, and years
+df_list <- list(df_14, df_15, df_16, df_17, df_18, df_19, df_20, df_21)
+state_list <- list("Maryland", "Virginia")
+
+year_list <- list("14", "15", "16", "17", "18", "19", "20", "21")
+
+# Create an empty list to store the output data frames
+output_list <- list()
+
+# Loop over the lists and create the output data frames
+for (state in state_list) {
+  for (i in seq_along(year_list)) {
+    df <- df_list[[i]] %>%
+      drop_na(State) %>%
+      filter(State == state) %>%
+      mutate(county = if_else(row_number() == 1, "state", County)) %>%
+      select(Nation, Region, Division, State, county, everything()) %>%
+      select(-c(County)) %>%
+      drop_na(county)
+    output_list[[paste0(tolower(state), "_", year_list[[i]] )]] <- df
+  }
+}
+
+md_mont_21 <- output_list$maryland_21 %>%
+  filter(county == "Montgomery")
+md_mont_20 <- output_list$maryland_20 %>%
+  filter(county == "Montgomery")
+md_mont_19 <- output_list$maryland_19 %>%
+  filter(county == "Montgomery")
+md_mont_18 <- output_list$maryland_18 %>%
+  filter(county == "Montgomery")
+md_mont_17 <- output_list$maryland_17 %>%
+  filter(county == "Montgomery")
+md_mont_16 <- output_list$maryland_16 %>%
+  filter(county == "Montgomery")
+md_mont_15 <- output_list$maryland_15 %>%
+  filter(county == "Montgomery")
+md_mont_14 <- output_list$maryland_14 %>%
+  filter(county == "Montgomery")
+
+va_fair_21 <- output_list$virginia_21 %>%
+  filter(county == "Fairfax")
+va_fair_20 <- output_list$virginia_20 %>%
+  filter(county == "Fairfax")
+va_fair_19 <- output_list$virginia_19 %>%
+  filter(county == "Fairfax")
+va_fair_18 <- output_list$virginia_18 %>%
+  filter(county == "Fairfax")
+va_fair_17 <- output_list$virginia_17 %>%
+  filter(county == "Fairfax")
+va_fair_16 <- output_list$virginia_16 %>%
+  filter(county == "Fairfax")
+va_fair_15 <- output_list$virginia_15 %>%
+  filter(county == "Fairfax")
+va_fair_14 <- output_list$virginia_14 %>%
+  filter(county == "Fairfax")
+```
+
+```{r}
+names(va_fair_21)
+```
+
+
+```{r, echo=FALSE}
+dfs <- list()
+
+# loop through each state and year combination
+for (state in c("md_mont", "va_fair")) {
+  for (year in c(14, 15, 16, 17, 18, 19, 20, 21)) {
+    
+    # create the variable name for the current data frame
+    var_name <- paste(state, "_", year, sep="")
+    
+    # create the data frame
+    df <- get(var_name) %>%
+      select(NAICS2_Name, TOTAL10, TOTAL1, TOTAL2, TOTAL3, TOTAL8, TOTAL9, TOTAL1_2, 
+             BLKT10, BLKT1, BLKT2, BLKT3, BLKT8, BLKT9, BLKT1_2, 
+             BLKF1, BLKF2, BLKF3, BLKF8, BLKF9, BLKF1_2,
+             AIANT10, AIANT1, AIANT2, AIANT3, AIANT8, AIANT9, AIANT1_2,
+             AIANF1, AIANF2, AIANF3, AIANF8, AIANF9, AIANF1_2,
+             HISPT10, HISPT1, HISPT2, HISPT3, HISPT8, HISPT9, HISPT1_2,
+             HISPF1, HISPF2, HISPF3, HISPF8, HISPF9, HISPF1_2,
+             ASIANT10, ASIANT1, ASIANT2, ASIANT3, ASIANT8, ASIANT9, ASIANT1_2,
+             ASIANF1, ASIANF2, ASIANF3, ASIANF8, ASIANF9, ASIANF1_2,
+             MT10, MT1, MT2, MT3, MT8, MT9, MT1_2,
+             FT10, FT1, FT2, FT3, FT8, FT9, FT1_2) %>%
+      
+      #mutate(across(c(TOTAL1, BLKT1), na_if, "*")) %>%
+      mutate(blk_mgt = BLKT1/TOTAL1) %>%
+      mutate(blk_prof = BLKT2/TOTAL2) %>%
+      mutate(blk_tech = BLKT3/TOTAL3) %>%
+      mutate(blk_lab = BLKT8/TOTAL8) %>%
+      mutate(blk_serv = BLKT9/TOTAL9) %>%
+      mutate(blk_mid_mgt = BLKT1_2/TOTAL1_2) %>%
+      
+      mutate(blk_fem_mgt = BLKF1/TOTAL1) %>%
+      mutate(blk_fem_prof = BLKF2/TOTAL2) %>%
+      mutate(blk_fem_tech = BLKF3/TOTAL3) %>%
+      mutate(blk_fem_lab = BLKF8/TOTAL8) %>%
+      mutate(blk_fem_serv = BLKF9/TOTAL9) %>%
+      mutate(blk_fem_mid_mgt = BLKF1_2/TOTAL1_2) %>%
+      
+      mutate(aian_mgt = AIANT1/TOTAL1) %>%
+      mutate(aian_prof = AIANT2/TOTAL2) %>%
+      mutate(aian_tech = AIANT3/TOTAL3) %>%
+      mutate(aian_lab = AIANT8/TOTAL8) %>%
+      mutate(aian_serv = AIANT9/TOTAL9) %>%
+      mutate(aian_mid_mgt = AIANT1_2/TOTAL1_2) %>%
+      
+      mutate(aian_fem_mgt = AIANF1/TOTAL1) %>%
+      mutate(aian_fem_prof = AIANF2/TOTAL2) %>%
+      mutate(aian_fem_tech = AIANF3/TOTAL3) %>%
+      mutate(aian_fem_lab = AIANF8/TOTAL8) %>%
+      mutate(aian_fem_serv = AIANF9/TOTAL9) %>%
+      mutate(aian_fem_mid_mgt = AIANF1_2/TOTAL1_2) %>%
+      
+      mutate(hisp_mgt = HISPT1/TOTAL1) %>%
+      mutate(hisp_prof = HISPT2/TOTAL2) %>%
+      mutate(hisp_tech = HISPT3/TOTAL3) %>%
+      mutate(hisp_lab = HISPT8/TOTAL8) %>%
+      mutate(hisp_serv = HISPT9/TOTAL9) %>%
+      mutate(hisp_mid_mgt = HISPT1_2/TOTAL1_2) %>%
+      
+      mutate(hisp_fem_mgt = HISPF1/TOTAL1) %>%
+      mutate(hisp_fem_prof = HISPF2/TOTAL2) %>%
+      mutate(hisp_fem_tech = HISPF3/TOTAL3) %>%
+      mutate(hisp_fem_lab = HISPF8/TOTAL8) %>%
+      mutate(hisp_fem_serv = HISPF9/TOTAL9) %>%
+      mutate(hisp_fem_mid_mgt = HISPF1_2/TOTAL1_2) %>%
+      
+      mutate(mt_mgt = MT1/TOTAL1) %>%
+      mutate(mt_prof = MT2/TOTAL2) %>%
+      mutate(mt_tech = MT3/TOTAL3) %>%
+      mutate(mt_lab = MT8/TOTAL8) %>%
+      mutate(mt_serv = MT9/TOTAL9) %>%
+      mutate(mt_mid_mgt = MT1_2/TOTAL1_2) %>%
+      
+      mutate(ft_mgt = FT1/TOTAL1) %>%
+      mutate(ft_prof = FT2/TOTAL2) %>%
+      mutate(ft_tech = FT3/TOTAL3) %>%
+      mutate(ft_lab = FT8/TOTAL8) %>%
+      mutate(ft_serv = FT9/TOTAL9) %>%
+      mutate(ft_mid_mgt = FT1_2/TOTAL1_2) %>%
+      
+      mutate(state = state) %>%
+      mutate(year = 2000 + year) %>%
+      select(state, year, everything())
+    
+    # add the data frame to the list
+    dfs[[var_name]] <- df
+  }
+}
+
+full_df <- do.call(rbind, dfs)
+```
+
+```{r}
+names(full_df)
+```
+
+#Data exploration
+```{r}
+state_colors <- c("va_fair" = "#A020F0", "md_mont" = "#30D5C8")
+
+blk_proj <- full_df %>%
+  filter(year <= 2019) %>%
+  filter(is.na(NAICS2_Name)) %>%
+  ggplot(aes(x = year, y = blk_prof, fill = state)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  scale_fill_manual(values = state_colors, labels = c('Montgomergy County, MD', 'Fairfax County, VA')) +
+  labs(title = "Proportion professional positions\nfilled by Black employees (2014 - 2019)", x = "Year", 
+       y = "Proportion", fill = "County") +
+  theme_bw()
+
+ft_prof <- full_df %>%
+  filter(year <= 2019) %>%
+  filter(is.na(NAICS2_Name)) %>%
+  ggplot(aes(x = year, y = ft_prof, fill = state)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  scale_fill_manual(values = state_colors, labels = c('Montgomergy County, MD', 'Fairfax County, VA')) +
+  labs(title = "Proportion professional employment\nfilled by female employees (2014 - 2019)", x = "Year", 
+       y = "", fill = "County") +
+  theme_bw()
+
+figure <- ggarrange(blk_prof, ft_prof,
+                    ncol = 2, nrow = 1, 
+                    common.legend = TRUE,
+                    legend="bottom")
+figure
+```
+
+# Manuel Diff-in-diff 
+
+```{r}
+#Setting up since_20 variable
+
+full_df <- full_df %>%
+  mutate(since_20 = if_else(year >= 2020, 1, 0))
+
+d <- full_df %>%
+  group_by(state, year) %>%
+  distinct(NAICS2_Name, .keep_all = TRUE) 
+```
+
+
+##Black professions
+
+```{r}
+diffs_blk <- d %>%
+  drop_na(NAICS2_Name) %>%
+  drop_na(blk_prof) %>%
+  group_by(since_20, state) %>% 
+  summarize(mean_blk_prof = mean(blk_prof))
+  
+before_treatment_blk <- diffs_blk %>%
+  filter(since_20 == 0, state == 'md_mont') %>% 
+  pull(mean_blk_prof)
+
+before_control_blk <- diffs_blk %>%
+  filter(since_20 == 0, state == 'va_fair') %>% 
+  pull(mean_blk_prof)
+
+after_treatment_blk <- diffs_blk %>%
+  filter(since_20 == 1, state == 'md_mont') %>% 
+  pull(mean_blk_prof)
+
+after_control_blk <- diffs_blk %>%
+  filter(since_20 == 1, state == 'va_fair') %>% 
+  pull(mean_blk_prof)
+
+diff_treatment_blk <- after_treatment_blk - before_treatment_blk
+diff_control_blk <- after_control_blk - before_control_blk
+
+dnd_blk <- diff_treatment_blk - diff_control_blk
+
+dnd_blk
+
+(0.178 - 0.174) - (0.130 - 0.128)
+```
+
+```{r}
+ggplot(diffs_blk, aes(x = since_20, y = mean_blk_prof, 
+                  color = state)) +
+  geom_point() +
+  geom_line(aes(group = state)) +
+  labs(title = 'Different in Difference\n(Black professional employment)', x = "", y = "Mean professional employment") +
+  annotate(geom = 'segment', x = 0, xend = 1, 
+           y = before_treatment_blk, yend = after_treatment_blk - dnd_blk,
+           linetype = 'dotted') +
+  annotate(geom = 'segment', x = 1, xend = 1, 
+           y = after_treatment_blk - dnd_blk, yend = after_treatment_blk) +
+  theme(legend.position = "none") +
+  theme_bw()
+```
+
+##Women
+
+```{r}
+diffs_ft <- d %>%
+  drop_na(NAICS2_Name) %>%
+  drop_na(ft_prof) %>%
+  group_by(since_20, state) %>% 
+  summarize(mean_ft_prof = mean(ft_prof))
+
+before_treatment_ft <- diffs_ft %>%
+  filter(since_20 == 0, state == 'md_mont') %>% 
+  pull(mean_ft_prof)
+
+before_control_ft <- diffs_ft %>%
+  filter(since_20 == 0, state == 'va_fair') %>% 
+  pull(mean_ft_prof)
+
+after_treatment_ft <- diffs_ft %>%
+  filter(since_20 == 1, state == 'md_mont') %>% 
+  pull(mean_ft_prof)
+
+after_control_ft <- diffs_ft %>%
+  filter(since_20 == 1, state == 'va_fair') %>% 
+  pull(mean_ft_prof)
+
+diff_treatment_ft <- after_treatment_ft - before_treatment_ft
+diff_control_ft <- after_control_ft - before_control_ft
+
+dnd_ft <- diff_treatment_ft - diff_control_ft
+
+dnd_ft
+
+(0.570 - 0.545) - (0.490 - 0.472) 
+```
+
+```{r}
+ggplot(diffs_ft, aes(x = since_20, y = mean_ft_prof, 
+                  color = state)) +
+  geom_point() +
+  geom_line(aes(group = state)) +
+  labs(title = 'Different in Difference\n(Female professional employment)', x = "", y = "") +
+  annotate(geom = 'segment', x = 0, xend = 1, 
+           y = before_treatment_ft, yend = after_treatment_ft - dnd_ft,
+           linetype = 'dotted') +
+  annotate(geom = 'segment', x = 1, xend = 1, 
+           y = after_treatment_ft - dnd_ft, yend = after_treatment_ft) +
+  theme(legend.position = "none") +
+  theme_bw()
+```
+
+
+```{r}
+names(df)
+```
+
+
+```{r}
+df$state <- factor(df$state, levels = c('va_fair', 'md_mont'))
+
+f <- d %>%
+  drop_na(NAICS2_Name)
+
+lm(blk_prof ~ state + since_20 + (state * since_20), data = f) %>%
+  tidy() %>%
+  mutate(
+    p.value = scales::pvalue(p.value),
+    term = c("Intercept", "Montgomery County", "Since 2020", "MC * Since 2020")
+  ) %>%
+  kable(
+    caption = "Estimated impact on Black professional employment",
+    col.names = c("Predictor", "B", "SE", "t", "p"),
+    digits = c(0, 2, 3, 2, 3),
+    align = c("l", "r", "r", "r", "r")
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    latex_options = c("striped", "hold_position"),
+    position = "center",
+    font_size = 12,
+    fixed_thead = TRUE
+  ) %>%
+  column_spec(1, width = "10em")
+```
+
+```{r}
+h <- d %>%
+  drop_na(NAICS2_Name) %>%
+  filter(NAICS2_Name == "Warehousing")
+
+lm(blk_prof ~ state + since_20 + (state * since_20), data = h) %>%
+  tidy() %>%
+  mutate(
+    p.value = scales::pvalue(p.value),
+    term = c("Intercept", "Montgomery County", "Since 2020", "MC * Since 2020")
+  ) %>%
+  kable(
+    caption = "Estimated impact on Black professional employment",
+    col.names = c("Predictor", "B", "SE", "t", "p"),
+    digits = c(0, 2, 3, 2, 3),
+    align = c("l", "r", "r", "r", "r")
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    latex_options = c("striped", "hold_position"),
+    position = "center",
+    font_size = 12,
+    fixed_thead = TRUE
+  ) %>%
+  column_spec(1, width = "10em")
+```
+
+
+```{r}
+lm(ft_prof ~ state + since_20 + (state * since_20), data = f) %>%
+  tidy() %>%
+  mutate(
+    p.value = scales::pvalue(p.value),
+    term = c("Intercept", "Montgomery County", "Since 2020", "MC * Since 2020")
+  ) %>%
+  kable(
+    caption = "Estimated impact on female professional employment",
+    col.names = c("Predictor", "B", "SE", "t", "p"),
+    digits = c(0, 2, 3, 2, 3),
+    align = c("l", "r", "r", "r", "r")
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    latex_options = c("striped", "hold_position"),
+    position = "center",
+    font_size = 12,
+    fixed_thead = TRUE
+  ) %>%
+  column_spec(1, width = "10em")
+```
+
+```{r}
+lm(blk_prof ~ state + since_20 + (state * since_20) + NAICS2_Name, data = f) %>%
+  tidy() %>%
+  mutate(
+    p.value = scales::pvalue(p.value),
+    term = c("Intercept", 
+             "Montgomery County",
+         "Since 2020",
+         "Admin, support, waste mgt",
+         "Arts, entertainment, and recreation",
+         "Construction",
+         "Edu services",
+         "Finance and insurance",
+         "Health care and social assistance",
+         "Information",
+         "Mgt. of companies and enterprises",
+         "Manufacturing",
+         "Other services",
+         "Professional, scientific and tech services",
+         "Public admin",
+         "Real estate",
+         "Retail trade",
+         "Utilities",
+         "Warehousing",
+         "Wholesale trade",
+         "Montgomery County * Since 2020")) %>%
+  kable(
+    caption = "Estimated impact on Black professional employment\n (controlling for sector)",
+    col.names = c("Predictor", "B", "SE", "t", "p"),
+    digits = c(0, 2, 3, 2, 3),
+    align = c("l", "r", "r", "r", "r")
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    latex_options = c("striped", "hold_position"),
+    position = "center",
+    font_size = 12,
+    fixed_thead = TRUE
+  ) %>%
+  column_spec(1, width = "10em")
+```
+
+
+```{r}
+lm(ft_prof ~ state + since_20 + (state * since_20) + NAICS2_Name, data = f) %>%
+  tidy() %>%
+  mutate(
+    p.value = scales::pvalue(p.value),
+    term = c("Intercept", 
+             "Montgomery County",
+         "Since 2020",
+         "Admin, support, waste mgt",
+         "Arts, entertainment, and recreation",
+         "Construction",
+         "Edu services",
+         "Finance and insurance",
+         "Health care and social assistance",
+         "Information",
+         "Mgt. of companies and enterprises",
+         "Manufacturing",
+         "Other services",
+         "Professional, scientific and tech services",
+         "Public admin",
+         "Real estate",
+         "Retail trade",
+         "Utilities",
+         "Warehousing",
+         "Wholesale trade",
+         "Montgomery County * Since 2020")) %>%
+  kable(
+    caption = "Estimated impact on female professional employment\n (controlling for sector)",
+    col.names = c("Predictor", "B", "SE", "t", "p"),
+    digits = c(0, 2, 3, 2, 3),
+    align = c("l", "r", "r", "r", "r")
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    latex_options = c("striped", "hold_position"),
+    position = "center",
+    font_size = 12,
+    fixed_thead = TRUE
+  ) %>%
+  column_spec(1, width = "10em")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
